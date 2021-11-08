@@ -1,6 +1,6 @@
 # Ignore Debug and Release folders
-Debug/
-Release/
+**/bin
+**/obj
 
 # Ignore .db files
-/PredictionApiChecker.Data.Access/*.db
+PredictionApiChecker.Data.Access/*.db
