@@ -45,7 +45,11 @@ namespace PredictionApiChecker.Console.IoC
                 services.AddScoped(interfaceService, type);
             }
 
-            services.AddHttpClient<PredictionService>();
+            services.AddHttpClient<PredictionService>(c => 
+            {
+                c.DefaultRequestHeaders.Add("x-rapidapi-host", "football-prediction-api.p.rapidapi.com");
+                c.DefaultRequestHeaders.Add("x-rapidapi-key", "7b4fd465a6mshf68edc31dfa3e66p122a6ejsn8dde8d1265a6");
+            });
         }
     }
 }

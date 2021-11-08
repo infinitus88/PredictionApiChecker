@@ -61,12 +61,7 @@ namespace PredictionApiChecker.Services.PredictionAppService
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://football-prediction-api.p.rapidapi.com/api/v2/predictions?market=classic&iso_date={date.ToString("yyyy-MM-dd")}&federation=UEFA"),
-                Headers =
-                {
-                    { "x-rapidapi-host", "football-prediction-api.p.rapidapi.com" },
-                    { "x-rapidapi-key", "7b4fd465a6mshf68edc31dfa3e66p122a6ejsn8dde8d1265a6" },
-                }
+                RequestUri = new Uri($"https://football-prediction-api.p.rapidapi.com/api/v2/predictions?market=classic&iso_date={date.ToString("yyyy-MM-dd")}&federation=UEFA")
             };
 
             var response = await _httpClient.SendAsync(request);
@@ -80,7 +75,7 @@ namespace PredictionApiChecker.Services.PredictionAppService
         {
             var dates = GetIntermediateDatesByPeriod(startDate, endDate);
 
-            IList<PredictionRecordModel> predictionRecords = new List<PredictionRecordModel>();
+            List<PredictionRecordModel> predictionRecords = new List<PredictionRecordModel>();
 
             foreach (var date in dates)
             {
@@ -88,11 +83,12 @@ namespace PredictionApiChecker.Services.PredictionAppService
 
                 if (validDate != null)
                 {
+                    _log.LogInformation("Prediciton records for {0} are already loaded to database!", validDate.LoadDate.ToString("dd'-'MM'-'yyyy"));
                     continue;
                 }
                 
-                IList<PredictionRecordModel> records = await GetPredictionsByDate(date);
-                predictionRecords.Concat(records);
+                IList<PredictionRecordModel> recordsByDate = await GetPredictionsByDate(date);
+                predictionRecords.AddRange(recordsByDate);
                 _repository.Add(new LoadingDate { LoadDate = date, LastUpdateAt = DateTime.Now });
             }
 
